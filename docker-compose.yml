@@ -2,15 +2,32 @@
 version: '3.8'
 
 services:
-#  backend:
-#    image: backend-spring:latest
-#    container_name: spring-backend
-#    ports:
-#      - "8080:8080"
-#    environment:
-#      - SPRING_PROFILES_ACTIVE=prod
-#    networks:
-#      - monitoring-network
+
+  postgres:
+    image: postgres
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: springboot
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - monitoring-network
+  backend:
+    image: backend-spring:latest
+    container_name: backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - monitoring-network
+    depends_on:
+      - postgres
+
 
   frontend:
     image: frontend-react:latest
@@ -19,8 +36,8 @@ services:
       - "3000:3000"
     environment:
       - REACT_APP_API_URL=http://localhost:8080
-#    depends_on:
-#      - backend
+    depends_on:
+      - backend
     networks:
       - monitoring-network
 
@@ -33,8 +50,8 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - monitoring-network
-#    depends_on:
-#      - backend
+    depends_on:
+      - backend
 
   grafana:
     image: grafana/grafana:latest
@@ -57,3 +74,4 @@ networks:
 
 volumes:
   grafana-data:
+  pgdata:
