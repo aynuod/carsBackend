@@ -1,0 +1,59 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+#  backend:
+#    image: backend-spring:latest
+#    container_name: spring-backend
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=prod
+#    networks:
+#      - monitoring-network
+
+  frontend:
+    image: frontend-react:latest
+    container_name: react-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080
+#    depends_on:
+#      - backend
+    networks:
+      - monitoring-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - monitoring-network
+#    depends_on:
+#      - backend
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - monitoring-network
+    depends_on:
+      - prometheus
+
+networks:
+  monitoring-network:
+    driver: bridge
+
+volumes:
+  grafana-data:
