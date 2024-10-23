@@ -87,6 +87,10 @@ docker-compose ps
 
 You should see `backend`, `postgres`, `frontend`, `prometheus`, and `grafana` running.
 
+Sure! Here’s the updated section with your request about consulting Prometheus' state through **Status > Targets**, as well as a placeholder for your example image:
+
+---
+
 ## Monitoring with Spring Boot Actuator, Prometheus, and Grafana
 
 ### 1. Spring Boot Actuator
@@ -104,6 +108,19 @@ You can query various metrics such as:
 - `http_server_requests_seconds_count`: HTTP request counts.
 - `jvm_memory_used_bytes`: Memory usage.
 - `process_cpu_usage`: CPU usage.
+
+#### Check the Status of Prometheus Targets
+
+To consult the state of your Prometheus, you can navigate to:
+
+1. **Status** → **Targets**
+2. Here, you'll see all the monitored endpoints. If everything is working correctly, the status will show **UP**; otherwise, it will show **DOWN**.
+
+This is an easy way to verify whether your services are being scraped correctly by Prometheus.
+
+> *Here is an example image from my project showing the state of the Prometheus targets:*
+
+![image](https://github.com/user-attachments/assets/54386bdb-e96c-4bed-90a0-d358fb06a872)
 
 ### 3. Accessing Grafana
 
