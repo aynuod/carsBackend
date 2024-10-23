@@ -3,7 +3,7 @@
 
 # Cars Backend (Spring Boot)
 
-This is the backend part of the **Voiture Shop App**, built with **Spring Boot** and **Java 17**, and Dockerized for easy deployment. The project includes integration with **Spring Boot Actuator**, **Prometheus**, and **Grafana** for monitoring and performance visualization. This guide provides steps for setting up, building, running, and monitoring the backend service using Docker Compose.
+This is the backend part of the **Voiture Shop App**, built with **Spring Boot**, **Java 17**, and Dockerized for easy deployment. The project integrates **Spring Boot Actuator**, **Prometheus**, and **Grafana** for monitoring and performance visualization. This guide provides steps for setting up, building, running, and monitoring the backend service using Docker Compose.
 
 ## Prerequisites
 
@@ -30,7 +30,24 @@ git clone https://github.com/aynuod/carsBackend.git
 cd carsBackend
 ```
 
-### 2. Build the Backend with Maven
+### 2. Add Dependencies
+
+To integrate **Prometheus**, **Spring Boot Actuator**, and **Grafana** for monitoring, you need to add the following dependencies to your `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>io.micrometer</groupId>
+    <artifactId>micrometer-registry-prometheus</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+
+These dependencies allow Prometheus to scrape metrics from your Spring Boot application through the Actuator.
+
+### 3. Build the Backend with Maven
 
 Before building the Docker image, ensure the project is compiled by running the following Maven command:
 
@@ -40,7 +57,7 @@ mvn clean package -DskipTests
 
 > ⚠️ **Note**: The tests are skipped here using the `-DskipTests` flag to speed up the build process. You can remove this flag if you want to run the tests.
 
-### 3. Build the Docker Image
+### 4. Build the Docker Image
 
 Once the project is built, create the Docker image for the backend service using:
 
@@ -50,7 +67,7 @@ docker build -t backend-spring .
 
 This will generate a Docker image for the backend using the `Dockerfile`.
 
-### 4. Run Docker Compose
+### 5. Run Docker Compose
 
 Now you can run all the services (backend, frontend, PostgreSQL, Prometheus, Grafana) defined in the Docker Compose file:
 
@@ -60,7 +77,7 @@ docker-compose up -d
 
 This command will start the services in detached mode, including the backend with PostgreSQL, the React frontend, Prometheus for scraping metrics, and Grafana for monitoring.
 
-### 5. Verify Services
+### 6. Verify Services
 
 Once Docker Compose is up, verify that all services are running:
 
@@ -111,17 +128,25 @@ The default login credentials for Grafana are:
 #### Import a Dashboard
 
 1. Navigate to **Create** → **Import**.
-2. You can use a pre-built dashboard from Grafana or create a custom one for Spring Boot metrics.
+2. You can use a pre-built dashboard from Grafana or create a custom one for Spring Boot metrics. 
 
-Common metrics include:
+For a more sophisticated dashboard, you can download a JSON template from [Actuator JSON Dashboard](https://grafana.com/grafana/dashboards) and import it into Grafana:
 
-- `jvm_memory_used_bytes`: Memory usage.
-- `http_server_requests_seconds_count`: HTTP request counts.
-- `process_cpu_usage`: CPU usage.
+- Navigate to **Create** → **Import**.
+- Upload the JSON file and map it to your Prometheus data source.
 
 ### 5. Customize Monitoring
 
 You can extend monitoring by adding custom metrics using the `@Timed`, `@Gauge`, or `@Counted` annotations in your Spring Boot application. These metrics will automatically be scraped by Prometheus and visualized in Grafana.
+
+For even more detailed dashboards, you can explore and install various plugins and templates from the Grafana marketplace to enhance the visualization of your metrics.
+
+### Dashboard Screenshot
+![image](https://github.com/user-attachments/assets/eeef8b95-c31d-4224-8486-c9cb0941d711)
+
+
+
+---
 
 ## Accessing the Application
 
@@ -133,3 +158,4 @@ Once the services are running, you can access the various parts of the applicati
 - **Grafana URL**: [http://localhost:3001](http://localhost:3001)
 
 ---
+
